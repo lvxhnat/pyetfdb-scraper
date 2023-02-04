@@ -1,5 +1,7 @@
 import os
 import json
+import time
+import warnings
 import requests
 from typing import List
 from pyetfdb_scraper.tabs import (
@@ -32,7 +34,16 @@ class ETFScraper(object):
 
         if response.status_code == 200:
             soup: BeautifulSoup = BeautifulSoup(response.text)
-
+        elif response.status_code == 429: 
+            warnings.warn("Too many requests. Sleeping for 60 seconds and retrying...")
+            time.sleep(60)
+            response: requests.Response = requests.get(
+                f"{base_url}/{ticker}", headers=request_headers
+            )
+            soup: BeautifulSoup = BeautifulSoup(response.text)
+        else: 
+            raise Exception(f"Request failed. Response code {str(response.status_code)}. Error string {response.text}")
+        
         self.etf_ticker_body_soup = soup.find("div", {"id": "etf-ticker-body"})
 
     def _get_etf_info(
