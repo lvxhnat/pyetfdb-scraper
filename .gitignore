@@ -1,7 +1,10 @@
 .env
 
+
 dist/
+build/
 __pycache__/
 .vscode/
+*.egg-info
 
 *.csv
