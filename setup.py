@@ -31,6 +31,7 @@ setup(
     url="https://github.com/lvxhnat/pyetf-scraper",
     package_dir={"": "src"},
     packages=find_packages("src", exclude=["*tests"]),
+    package_data={"my_package": ["data/etfdb.json"]},
     python_requires=">=3.7",
     install_requires=[
         "requests",
