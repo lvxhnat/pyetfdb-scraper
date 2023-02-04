@@ -5,7 +5,7 @@
 Install with ```pip``` as a package pip. See the pip package here https://pypi.org/project/pyetfdb-scraper/.
 
 ```
-pip install pyetfdb_scraper
+pip install pyetfdb-scraper
 ```
 
 ```python
