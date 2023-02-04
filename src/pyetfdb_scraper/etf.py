@@ -21,7 +21,7 @@ class ETFScraper(object):
     def __init__(self, ticker: str):
 
         self.ticker = ticker
-        base_url: str = "https://etfdb.com/etf/"
+        base_url: str = "https://etfdb.com/etf"
 
         request_headers: dict = {
             "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:77.0) Gecko/20100101 Firefox/77.0",
@@ -42,7 +42,7 @@ class ETFScraper(object):
             )
             soup: BeautifulSoup = BeautifulSoup(response.text)
         else: 
-            raise Exception(f"Request failed. Response code {str(response.status_code)}. Error string {response.text}")
+            raise Exception(f"Request failed for {ticker}. Response code {str(response.status_code)}. Error string {response.text}")
         
         self.etf_ticker_body_soup = soup.find("div", {"id": "etf-ticker-body"})
 
