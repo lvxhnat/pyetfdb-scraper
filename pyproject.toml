@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.darker]
+revision = "94f36d8d0cde18b5f2b6a2a4b009002e08bbd959"
+isort = true
+log_level = "INFO"
+line-length = 79
+
+[tool.black]
+line-length = 79
+
+[tool.isort]
+line_length = 79
+profile = "black"
+known_first_party = [
+    "common", "env", "backend", "interface", "engine", "cli", "experimental"
+]
+default_section = "THIRDPARTY"
+
+[tool.pylint]
+[tool.pylint.master]
+unsafe-load-any-extension = false
+
+[tool.pylint.messages_control]
+disable = [
+    "line-too-long", "no-else-return"
+]
+enable = ["useless-suppression"]
+
+[tool.pylint.refactoring]
+max-nested-blocks = 5
+
+[tool.pylint.format]
+max-line-length = 79
+indent-after-paren= 4
+indent-string = "    "
+
+[tool.pylint.miscellaneous]
+notes = [
+    "TODO",
+    "FIXME",
+]
+
+[tool.mypy]
+disallow_untyped_defs = true
+disallow_any_unimported = true
+no_implicit_optional = true
+check_untyped_defs = true
+warn_return_any = true
+show_error_codes = true
+warn_unused_ignores = true
+ignore_missing_imports = true
