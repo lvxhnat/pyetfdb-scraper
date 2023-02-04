@@ -15,9 +15,9 @@ from pyetfdb_scraper import etf
 ## Example Usage
 
 ```python
-from pyetfdb_scraper.etf import ETF, list_etfs
+from pyetfdb_scraper.etf import ETF,load_etfs 
 # returns list of available ETFs.
-etfs = list_etfs()
+etfs = load_etfs()
 # load etf
 vwo = ETF('VWO')
 # Get basic ETF information

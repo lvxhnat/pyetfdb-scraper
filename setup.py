@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="pyetfdb_scraper",
-    version="0.2.0",
+    version="0.1.0",
     author="Yi Kuang",
     author_email="yikuang5@gmail.com",
     description="Scrape ETFs from ETFDB",
