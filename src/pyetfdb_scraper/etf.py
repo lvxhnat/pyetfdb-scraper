@@ -128,7 +128,7 @@ class ETF(ETFScraper):
     def base_info(
         self,
     ):
-        return self._get_base_etf_info
+        return self._get_base_etf_info()
 
     @property
     def info(
