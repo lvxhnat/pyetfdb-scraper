@@ -151,7 +151,8 @@ def _get_tradedata(ticker_profile_soup: ResultSet):
         4,
     )
     list_rows = list_tag.find_all("li")
-    aum_rows = jump_siblings(list_tag, 4).find_all("li")
+    aum_rows = jump_siblings(list_tag, 4)
+    aum_rows = aum_rows.find_all("li") if aum_rows else []
     list_rows += aum_rows
 
     list_dict = {}
@@ -162,17 +163,21 @@ def _get_tradedata(ticker_profile_soup: ResultSet):
         ]
         list_dict[cleaned_content[0]] = cleaned_content[1]
 
-    return list_dict
+    return {
+        "type": "list",
+        "data": list_dict,
+        "header": "Historical Trade Data",
+    }
 
 
 def _get_historicaltradedata(ticker_profile_soup: ResultSet):
     """
     Example Return
     ===============
-    {
-        '1 Month Avg. Volume': '5,263,078',
-        '3 Month Avg. Volume': '4,885,578'
-    }
+    {'type': 'list',
+    'data': {'1 Month Avg. Volume': '80,971,624',
+    '3 Month Avg. Volume': '82,142,920'},
+    'header': 'Historical Trade Data'}
     """
     list_tag = jump_siblings(
         ticker_profile_soup.find(

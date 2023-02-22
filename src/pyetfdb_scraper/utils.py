@@ -80,9 +80,13 @@ def _scrape_table(
 ):
 
     if not tag:
-        table_rows = jump_siblings(
-            ticker_profile_soup.find("h3", class_=h4_regex, text=text), 2
-        )
+        header_tag: Tag = ticker_profile_soup.find("h3", class_=h4_regex, text=text)
+        if header_tag:
+            table_rows = jump_siblings(
+                header_tag, 2
+            )
+        else:
+            return None
     if tag:
         if isinstance(tag, Tag):
             table_rows = tag

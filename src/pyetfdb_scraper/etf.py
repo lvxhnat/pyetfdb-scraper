@@ -4,6 +4,9 @@ import time
 import warnings
 import requests
 from typing import List
+from bs4 import BeautifulSoup
+from urllib3.exceptions import NewConnectionError
+
 from pyetfdb_scraper.tabs import (
     get_info,
     get_expense,
@@ -14,37 +17,67 @@ from pyetfdb_scraper.tabs import (
     get_technicals,
     get_realtime_ratings,
 )
-from bs4 import BeautifulSoup
 
 
 class ETFScraper(object):
     def __init__(self, ticker: str):
 
         self.ticker = ticker
-        base_url: str = "https://etfdb.com/etf"
+        self.base_url: str = "https://etfdb.com/etf"
 
-        request_headers: dict = {
+        self.request_headers: dict = {
             "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:77.0) Gecko/20100101 Firefox/77.0",
-            "Accept": "application/json",
         }
+        self.scrape_url: str = f"{self.base_url}/{ticker}"
 
-        response: requests.Response = requests.get(
-            f"{base_url}/{ticker}", headers=request_headers
-        )
+        soup = self.request_ticker()
 
-        if response.status_code == 200:
-            soup: BeautifulSoup = BeautifulSoup(response.text)
-        elif response.status_code == 429: 
-            warnings.warn("Too many requests. Sleeping for 60 seconds and retrying...")
-            time.sleep(60)
-            response: requests.Response = requests.get(
-                f"{base_url}/{ticker}", headers=request_headers
-            )
-            soup: BeautifulSoup = BeautifulSoup(response.text)
-        else: 
-            raise Exception(f"Request failed for {ticker}. Response code {str(response.status_code)}. Error string {response.text}")
-        
         self.etf_ticker_body_soup = soup.find("div", {"id": "etf-ticker-body"})
+
+    def request_ticker(self, retries: int = 3) -> BeautifulSoup:
+        try:
+            response: requests.Response = requests.get(
+                self.scrape_url, headers=self.request_headers
+            )
+            if response.status_code == 200:
+                soup = BeautifulSoup(response.text)
+                return soup
+            elif response.status_code == 429:
+                warnings.warn(
+                    "Too many requests. Sleeping for 60 seconds and retrying..."
+                )
+                time.sleep(60)
+                response: requests.Response = requests.get(
+                    self.scrape_url, headers=self.request_headers
+                )
+                soup = BeautifulSoup(response.text)
+                return soup
+            else:
+                raise Exception(
+                    f"Request failed for {self.scrape_url}. Response code {str(response.status_code)}. Error string {response.text}"
+                )
+        except OSError as oex:
+            if retries:
+                self.request_ticker(retries=retries - 1)
+            else:
+                raise
+        except NewConnectionError as nex:
+            warnings.warn(f"{str(nex)}. Rotating to next ip address.")
+            if retries:
+                self.request_ticker(retries=retries - 1)
+            else:
+                raise
+        except Exception:
+            raise
+
+    def _get_base_etf_info(
+        self,
+    ):
+        return {
+            "etf_name": " ".join(
+                self.etf_ticker_body_soup.find("h2").contents
+            ).replace("\n", ""),
+        }
 
     def _get_etf_info(
         self,
@@ -90,6 +123,12 @@ class ETFScraper(object):
 class ETF(ETFScraper):
     def __init__(self, ticker: str):
         super().__init__(ticker)
+
+    @property
+    def base_info(
+        self,
+    ):
+        return self._get_base_etf_info
 
     @property
     def info(
@@ -143,6 +182,7 @@ class ETF(ETFScraper):
         self,
     ):
         return {
+            "base_info": self.base_info,
             "info": self.info,
             "expense": self.expense,
             "holdings": self.holdings,
