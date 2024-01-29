@@ -30,7 +30,8 @@ def get_indicators(ticker_profile_soup: ResultSet):
             ]
         except (KeyError, TypeError) as e:
             print(e)
-    return dict(results)
+            
+    return {"_".join(k.lower().split(" ")): v for k, v in dict(results).items()}
 
 
 def get_volatility(ticker_profile_soup: ResultSet):
@@ -41,6 +42,9 @@ def get_volatility(ticker_profile_soup: ResultSet):
         ),
         4,
     ).find("table")
-    return _scrape_table(
+    
+    data = _scrape_table(
         ticker_profile_soup, text=volatility_regex_header, tag=vol_tag
-    )
+    )['data']
+    
+    return {"_".join(k.lower().split(" ")): v for k, v in data.items()}

@@ -1,5 +1,7 @@
 from bs4.element import ResultSet
-
+from pyetfdb_scraper.utils import (
+    get_nested,
+)
 
 def get_performance(ticker_profile_soup: ResultSet):
     """Performance Tab"""
@@ -20,5 +22,13 @@ def get_performance(ticker_profile_soup: ResultSet):
         for index, header in enumerate(headers):
             d[header] = "".join(body_el[index].contents).replace("\n", "")
         results.append(d)
+        
+    ticker = ""
+    try: ticker = [*results[0].keys()][1] 
+    except: pass
 
-    return {"type": "table-vertical", "data": results, "header": "Holding Statistics"}
+    return [{
+        "_".join(d[""].lower().split(" ")): get_nested(d, [ticker]),
+        "etf_database_category_average": get_nested(d, ['ETF Database Category Average']),
+        "factset_segment_average": get_nested(d, ['FactSet Segment Average']),
+    } for d in results]

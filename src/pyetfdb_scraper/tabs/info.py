@@ -4,6 +4,7 @@ from pyetfdb_scraper.utils import (
     _scrape_table,
     jump_siblings,
     unpack_tag_contents,
+    get_nested,
     h4_regex,
     factset_regex_header,
     vitals_regex_header,
@@ -13,9 +14,10 @@ from pyetfdb_scraper.utils import (
     altetfs2_regex_header,
     altetfs_regex_header,
 )
+from pyetfdb_scraper.models import InfoModel
 
 
-def get_info(ticker_profile_soup: ResultSet):
+def get_info(ticker_profile_soup: ResultSet) -> InfoModel:
     return {
         "vitals": _get_vitals(ticker_profile_soup=ticker_profile_soup),
         "dbtheme": _get_dbtheme(ticker_profile_soup=ticker_profile_soup),
@@ -56,9 +58,23 @@ def _get_vitals(ticker_profile_soup: ResultSet):
             }
     }
     """
-    return _scrape_div_class_ticker_assets(
+    data = _scrape_div_class_ticker_assets(
         ticker_profile_soup, vitals_regex_header
     )
+    
+    return {
+        "issuer": get_nested(data, ['data', 'data', 'Issuer', 'text']),
+        "issuer_link": get_nested(data, ['data', 'data', 'Issuer', 'link']),
+        "brand":  get_nested(data, ['data', 'data', 'Brand', 'text']),
+        "brand_link":  get_nested(data, ['data', 'data', 'Brand', 'link']),
+        "structure":  get_nested(data, ['data', 'data', 'Structure', 'text']),
+        "structure_link": get_nested(data, ['data', 'data', 'Structure', 'link']),
+        "expense_ratio": get_nested(data, ['data', 'data', 'Expense Ratio', 'text']),
+        "hompage_link": get_nested(data, ['data', 'data', 'ETF Home Page', 'link']),
+        "inception": get_nested(data, ['data', 'data', 'Inception', 'text']),
+        "index_tracked": get_nested(data, ['data', 'data', 'Index Tracked', 'text']),
+        "index_tracked_link": get_nested(data, ['data', 'data', 'Index Tracked', 'link']),
+    }
 
 
 def _get_dbtheme(ticker_profile_soup: ResultSet):
@@ -78,9 +94,24 @@ def _get_dbtheme(ticker_profile_soup: ResultSet):
         }
     }
     """
-    return _scrape_div_class_ticker_assets(
+    data = _scrape_div_class_ticker_assets(
         ticker_profile_soup, dbtheme_regex_header
     )
+    
+    return {
+        "category": get_nested(data, ['data', 'Category', 'text']),
+        "category_link": get_nested(data, ['data', 'Category', 'link']),
+        "asset_class":  get_nested(data, ['data', 'Asset Class', 'text']),
+        "asset_class_link":  get_nested(data, ['data', 'Asset Class', 'link']),
+        "asset_class_size":  get_nested(data, ['data', 'Asset Class Size', 'text']),
+        "asset_class_size_link": get_nested(data, ['data', 'Asset Class Size', 'link']),
+        "asset_class_style": get_nested(data, ['data', 'Asset Class Style', 'text']),
+        "asset_class_style_link": get_nested(data, ['data', 'Asset Class Style', 'link']),
+        "general_region": get_nested(data, ['data', 'Region (General)', 'text']),
+        "general_region_link": get_nested(data, ['data', 'Region (General)', 'link']),
+        "specific_region": get_nested(data, ['data', 'Region (Specific)', 'text']),
+        "specific_region_link": get_nested(data, ['data', 'Region (Specific)', 'link']),
+    }
 
 
 def _get_factset(ticker_profile_soup: ResultSet):
@@ -101,7 +132,15 @@ def _get_factset(ticker_profile_soup: ResultSet):
         },
     }
     """
-    return _scrape_table(ticker_profile_soup, text=factset_regex_header)
+    data = _scrape_table(ticker_profile_soup, text=factset_regex_header)
+    return {
+        "segment": get_nested(data, ['data', 'fact_set', 'data', 'Segment']),
+        "category": get_nested(data, ['data', 'fact_set', 'data', 'Category']),
+        "focus": get_nested(data, ['data', 'fact_set', 'data', 'Focus']),
+        "niche": get_nested(data, ['data', 'fact_set', 'data', 'Niche']),
+        "strategy": get_nested(data, ['data', 'fact_set', 'data', 'Strategy']),
+        "weighting_scheme": get_nested(data, ['data', 'fact_set', 'data', 'Weighting Scheme']),
+    }
 
 
 def _get_analyst_report(ticker_profile_soup: ResultSet):
@@ -164,9 +203,14 @@ def _get_tradedata(ticker_profile_soup: ResultSet):
         list_dict[cleaned_content[0]] = cleaned_content[1]
 
     return {
-        "type": "list",
-        "data": list_dict,
-        "header": "Historical Trade Data",
+        "open": get_nested(list_dict, ['data', 'Open']),
+        "volume": get_nested(list_dict, ['data', 'Volume']),
+        "day_low": get_nested(list_dict, ['data', 'Day Lo']),
+        "day_high": get_nested(list_dict, ['data', 'Day Hi']),
+        "52_week_low": get_nested(list_dict, ['data', '52 Week Lo']),
+        "52_week_high": get_nested(list_dict, ['data', '52 Week Hi']),
+        "aum": get_nested(list_dict, ['data', 'AUM']),
+        "shares": get_nested(list_dict, ['data', 'Shares']),
     }
 
 
@@ -196,9 +240,8 @@ def _get_historicaltradedata(ticker_profile_soup: ResultSet):
         list_dict[cleaned_content[0]] = cleaned_content[1]
 
     return {
-        "type": "list",
-        "data": list_dict,
-        "header": "Historical Trade Data",
+        "1_month_avg_volume": get_nested(list_dict, ['data', '1 Month Avg. Volume']),
+        "3_month_avg_volume": get_nested(list_dict, ['data', '3 Month Avg. Volume']),
     }
 
 
@@ -219,9 +262,17 @@ def _get_altetfs(ticker_profile_soup: ResultSet):
         'header': 'Alternative ETFs in the ETF'
     }
     """
-    return _scrape_table(
+    data = _scrape_table(
         ticker_profile_soup, text=altetfs_regex_header, columns=6
     )
+    return [{
+        "type": get_nested(input_data, ['Type']),
+        "ticker": get_nested(input_data, ['Ticker']),
+        "expense_ratio": get_nested(input_data, ['Expense Ratio']),
+        "assets": get_nested(input_data, ['Assets']),
+        "avg_daily_volume": get_nested(input_data, ['Avg. Daily Vol']),
+        "ytd_return": get_nested(input_data, ['YTD Return'])
+    } for input_data in get_nested(data, ['data'])]
 
 
 def _get_altetfs2(ticker_profile_soup: ResultSet):
@@ -240,6 +291,14 @@ def _get_altetfs2(ticker_profile_soup: ResultSet):
         'header': 'Alternative ETFs in the FactSet'}
     }
     """
-    return _scrape_table(
+    data = _scrape_table(
         ticker_profile_soup, text=altetfs2_regex_header, columns=6
     )
+    return [{
+        "type": get_nested(input_data, ['Type']),
+        "ticker": get_nested(input_data, ['Ticker']),
+        "expense_ratio": get_nested(input_data, ['Expense Ratio']),
+        "assets": get_nested(input_data, ['Assets']),
+        "avg_daily_volume": get_nested(input_data, ['Avg. Daily Vol']),
+        "ytd_return": get_nested(input_data, ['YTD Return'])
+    } for input_data in get_nested(data, ['data'])]

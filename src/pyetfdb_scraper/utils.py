@@ -134,3 +134,14 @@ def _scrape_table(
     final_output["header"] = text.pattern
 
     return final_output
+
+def get_nested(dictionary, keys):
+    """https://stackoverflow.com/questions/1835756/using-try-vs-if-in-python
+    Most of our data do contain the key we require, therefore it is better for us to ask for forgiveness.
+    """
+    try:
+        for key in keys:
+            dictionary = dictionary[key]
+        return dictionary
+    except (KeyError, TypeError):
+        return None
