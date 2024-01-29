@@ -67,16 +67,12 @@ class ETFScraper(object):
             else:
                 raise
         except NewConnectionError as nex:
-            warnings.warn(f"{str(nex)}. Rotating to next ip address.")
             if retries:
                 self.__request_ticker(retries=retries - 1)
             else:
                 raise
         except Exception:
             raise
-        finally:
-            self.request_headers["User-Agent"] = next(self.user_agents)
-            print(self.request_headers)
 
     def _get_base_etf_info(
         self,
