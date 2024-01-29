@@ -103,7 +103,6 @@ def _scrape_table(
     table_rows = table_rows.find_all("td")
 
     for i in range(0, len(table_rows), columns):
-        # print(table_rows[i])
         if table_rows[i + 1].has_attr("data-th"):
             final_output["type"] = "table-vertical"
             entry = {}
@@ -134,3 +133,14 @@ def _scrape_table(
     final_output["header"] = text.pattern
 
     return final_output
+
+def get_nested(dictionary, keys):
+    """https://stackoverflow.com/questions/1835756/using-try-vs-if-in-python
+    Most of our data do contain the key we require, therefore it is better for us to ask for forgiveness.
+    """
+    try:
+        for key in keys:
+            dictionary = dictionary[key]
+        return dictionary
+    except (KeyError, TypeError):
+        return None

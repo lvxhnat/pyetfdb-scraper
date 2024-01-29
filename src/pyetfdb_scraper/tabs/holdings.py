@@ -1,5 +1,6 @@
 from bs4.element import ResultSet
 from pyetfdb_scraper.utils import (
+    get_nested,
     _scrape_table,
     sizecomparison_regex_header,
     holdingscomparison_regex_header,
@@ -74,11 +75,12 @@ def _get_top_holdings(ticker_profile_soup: ResultSet):
     except AttributeError:
         results = []
 
-    return {
-        "type": "table-vertical",
-        "data": results,
-        "header": "Top Holdings",
-    }
+    return [{
+        "symbol": get_nested(d, ["Symbol"]),
+        "holding": get_nested(d, ["Holding"]),
+        "share": get_nested(d, ["Share"]),
+        "url": get_nested(d, ["Url"]),
+    } for d in results]
 
 
 def _get_holding_comparison(ticker_profile_soup: ResultSet):
@@ -107,12 +109,17 @@ def _get_holding_comparison(ticker_profile_soup: ResultSet):
     """
 
     holding_table = ticker_profile_soup.find("table", {"id": "holdings-table"})
-    return _scrape_table(
+    data = _scrape_table(
         ticker_profile_soup,
         text=holdingscomparison_regex_header,
         tag=holding_table,
         columns=4,
-    )
+    )['data']
+    return [{
+        "_".join(d[''].lower().replace("%", "pct").split(" ")).strip("_"): get_nested(d, ["Fund"]),
+        "etf_database_category_average": get_nested(d, ['ETF Database Category Average']),
+        "factset_segment_average": get_nested(d, ['FactSet Segment Average']),
+    } for d in data]
 
 
 def _get_size_comparison(ticker_profile_soup: ResultSet):
@@ -140,9 +147,14 @@ def _get_size_comparison(ticker_profile_soup: ResultSet):
      'header': 'Size Comparison'}
     """
     size_table = ticker_profile_soup.find("table", {"id": "size-table"})
-    return _scrape_table(
+    data = _scrape_table(
         ticker_profile_soup,
         text=sizecomparison_regex_header,
         tag=size_table,
         columns=4,
-    )
+    )['data']
+    return [{
+        "_".join(d[''].lower().replace("%", "pct").split(" ")).strip("_"): get_nested(d, ["Fund"]),
+        "etf_database_category_average": get_nested(d, ['ETF Database Category Average']),
+        "factset_segment_average": get_nested(d, ['FactSet Segment Average']),
+    } for d in data]

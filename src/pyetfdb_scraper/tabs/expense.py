@@ -1,5 +1,5 @@
 from bs4.element import ResultSet, Tag
-from pyetfdb_scraper.utils import _scrape_table, taxanalysis_regex_header
+from pyetfdb_scraper.utils import _scrape_table, taxanalysis_regex_header, get_nested
 
 
 def get_expense(ticker_profile_soup: ResultSet):
@@ -18,9 +18,15 @@ def get_tax_analysis(ticker_profile_soup: ResultSet):
     table_tag = ticker_profile_soup.find("div", {"id": "expense_tab"}).find(
         "table"
     )
-    return _scrape_table(
+    data = _scrape_table(
         ticker_profile_soup, tag=table_tag, text=taxanalysis_regex_header
     )
+    return {
+        "max_short_term_capital_gains_rate": get_nested(data, ['data', 'Max ST Capital Gains Rate']),
+        "max_long_term_capital_gains_rate": get_nested(data, ['data', 'Max LT Capital Gains Rate']),
+        "tax_on_distributions": get_nested(data, ['data', 'Tax On Distributions']),
+        "distributes_k1": get_nested(data, ['data', 'Distributes K1'])
+    }
 
 
 def get_expense_ratio_analysis(ticker_profile_soup: ResultSet):
@@ -35,11 +41,7 @@ def get_expense_ratio_analysis(ticker_profile_soup: ResultSet):
         )
     ]
 
-    return {
-        "type": "table-vertical",
-        "data": [
-            {"".join(entry[0].contents): "".join(entry[3].contents)}
+    return [
+            {"_".join("".join(entry[0].contents).lower().split(" ")): "".join(entry[3].contents)}
             for entry in expense_rations
-        ],
-        "header": "Expense Ratio Analysis",
-    }
+        ]

@@ -7,9 +7,12 @@ def get_realtime_ratings(ticker_profile_soup: ResultSet):
     ratings_tag = ticker_profile_soup.find(
         "div", {"id": "realtime-collapse"}
     ).find("table")
-    return _scrape_table(
+    
+    data = _scrape_table(
         ticker_profile_soup,
         text=ratings_regex_header,
         tag=ratings_tag,
         columns=3,
-    )
+    )['data']
+    
+    return [{"_".join(k.lower().split(" ")): v for k, v in d.items()} for d in data]
