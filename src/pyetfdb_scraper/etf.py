@@ -4,8 +4,12 @@ from typing import List
 from pyetfdb_scraper.etf_scraper import ETFScraper
 
 class ETF(ETFScraper):
-    def __init__(self, ticker: str):
-        super().__init__(ticker)
+    def __init__(
+        self, 
+        ticker: str,
+        user_agent: str = None
+    ):
+        super().__init__(ticker, user_agent)
 
     @property
     def base_info(

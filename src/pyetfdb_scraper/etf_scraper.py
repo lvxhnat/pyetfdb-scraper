@@ -1,9 +1,9 @@
 import os
 import time
+import random
 import warnings
 import requests
 from bs4 import BeautifulSoup
-from itertools import cycle
 from urllib3.exceptions import NewConnectionError
 
 from pyetfdb_scraper.tabs import (
@@ -20,14 +20,18 @@ from pyetfdb_scraper.models import InfoModel, BaseInfoModel, ExpenseModel
 
 class ETFScraper(object):
     
-    def __init__(self, ticker: str):
+    def __init__(
+        self, 
+        ticker: str,
+        user_agent: str = None,
+    ):
 
         self.ticker = ticker
         self.base_url: str = "https://etfdb.com/etf"
 
-        self.user_agents = cycle(load_user_agents())
+        self.user_agents = load_user_agents()
         self.request_headers: dict = {
-            "User-Agent": next(self.user_agents),
+            "User-Agent": user_agent if not user_agent else random.choice(self.user_agents),
         }
         self.scrape_url: str = f"{self.base_url}/{ticker}"
 
