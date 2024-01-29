@@ -26,7 +26,7 @@ def get_performance(ticker_profile_soup: ResultSet):
     ticker = ""
     try: ticker = [*results[0].keys()][1] 
     except: pass
-
+    
     return [{
         "_".join(d[""].lower().split(" ")): get_nested(d, [ticker]),
         "etf_database_category_average": get_nested(d, ['ETF Database Category Average']),

@@ -60,20 +60,20 @@ def _get_vitals(ticker_profile_soup: ResultSet):
     """
     data = _scrape_div_class_ticker_assets(
         ticker_profile_soup, vitals_regex_header
-    )
+    )['data']
     
     return {
-        "issuer": get_nested(data, ['data', 'data', 'Issuer', 'text']),
-        "issuer_link": get_nested(data, ['data', 'data', 'Issuer', 'link']),
-        "brand":  get_nested(data, ['data', 'data', 'Brand', 'text']),
-        "brand_link":  get_nested(data, ['data', 'data', 'Brand', 'link']),
-        "structure":  get_nested(data, ['data', 'data', 'Structure', 'text']),
-        "structure_link": get_nested(data, ['data', 'data', 'Structure', 'link']),
-        "expense_ratio": get_nested(data, ['data', 'data', 'Expense Ratio', 'text']),
-        "hompage_link": get_nested(data, ['data', 'data', 'ETF Home Page', 'link']),
-        "inception": get_nested(data, ['data', 'data', 'Inception', 'text']),
-        "index_tracked": get_nested(data, ['data', 'data', 'Index Tracked', 'text']),
-        "index_tracked_link": get_nested(data, ['data', 'data', 'Index Tracked', 'link']),
+        "issuer": get_nested(data, ['Issuer', 'text']),
+        "issuer_link": get_nested(data, ['Issuer', 'link']),
+        "brand":  get_nested(data, ['Brand', 'text']),
+        "brand_link":  get_nested(data, ['Brand', 'link']),
+        "structure":  get_nested(data, ['Structure', 'text']),
+        "structure_link": get_nested(data, ['Structure', 'link']),
+        "expense_ratio": get_nested(data, ['Expense Ratio', 'text']),
+        "hompage_link": get_nested(data, ['ETF Home Page', 'link']),
+        "inception": get_nested(data, ['Inception', 'text']),
+        "index_tracked": get_nested(data, ['Index Tracked', 'text']),
+        "index_tracked_link": get_nested(data, ['Index Tracked', 'link']),
     }
 
 
@@ -132,14 +132,15 @@ def _get_factset(ticker_profile_soup: ResultSet):
         },
     }
     """
-    data = _scrape_table(ticker_profile_soup, text=factset_regex_header)
+    data = _scrape_table(ticker_profile_soup, text=factset_regex_header)['data']
+    
     return {
-        "segment": get_nested(data, ['data', 'fact_set', 'data', 'Segment']),
-        "category": get_nested(data, ['data', 'fact_set', 'data', 'Category']),
-        "focus": get_nested(data, ['data', 'fact_set', 'data', 'Focus']),
-        "niche": get_nested(data, ['data', 'fact_set', 'data', 'Niche']),
-        "strategy": get_nested(data, ['data', 'fact_set', 'data', 'Strategy']),
-        "weighting_scheme": get_nested(data, ['data', 'fact_set', 'data', 'Weighting Scheme']),
+        "segment": get_nested(data, ['Segment']),
+        "category": get_nested(data, ['Category']),
+        "focus": get_nested(data, ['Focus']),
+        "niche": get_nested(data, ['Niche']),
+        "strategy": get_nested(data, ['Strategy']),
+        "weighting_scheme": get_nested(data, ['Weighting Scheme']),
     }
 
 
@@ -203,14 +204,14 @@ def _get_tradedata(ticker_profile_soup: ResultSet):
         list_dict[cleaned_content[0]] = cleaned_content[1]
 
     return {
-        "open": get_nested(list_dict, ['data', 'Open']),
-        "volume": get_nested(list_dict, ['data', 'Volume']),
-        "day_low": get_nested(list_dict, ['data', 'Day Lo']),
-        "day_high": get_nested(list_dict, ['data', 'Day Hi']),
-        "52_week_low": get_nested(list_dict, ['data', '52 Week Lo']),
-        "52_week_high": get_nested(list_dict, ['data', '52 Week Hi']),
-        "aum": get_nested(list_dict, ['data', 'AUM']),
-        "shares": get_nested(list_dict, ['data', 'Shares']),
+        "open": get_nested(list_dict, ['Open']),
+        "volume": get_nested(list_dict, ['Volume']),
+        "day_low": get_nested(list_dict, ['Day Lo']),
+        "day_high": get_nested(list_dict, ['Day Hi']),
+        "52_week_low": get_nested(list_dict, ['52 Week Lo']),
+        "52_week_high": get_nested(list_dict, ['52 Week Hi']),
+        "aum": get_nested(list_dict, ['AUM']),
+        "shares": get_nested(list_dict, ['Shares']),
     }
 
 
@@ -240,8 +241,8 @@ def _get_historicaltradedata(ticker_profile_soup: ResultSet):
         list_dict[cleaned_content[0]] = cleaned_content[1]
 
     return {
-        "1_month_avg_volume": get_nested(list_dict, ['data', '1 Month Avg. Volume']),
-        "3_month_avg_volume": get_nested(list_dict, ['data', '3 Month Avg. Volume']),
+        "1_month_avg_volume": get_nested(list_dict, ['1 Month Avg. Volume']),
+        "3_month_avg_volume": get_nested(list_dict, ['3 Month Avg. Volume']),
     }
 
 

@@ -103,7 +103,6 @@ def _scrape_table(
     table_rows = table_rows.find_all("td")
 
     for i in range(0, len(table_rows), columns):
-        # print(table_rows[i])
         if table_rows[i + 1].has_attr("data-th"):
             final_output["type"] = "table-vertical"
             entry = {}

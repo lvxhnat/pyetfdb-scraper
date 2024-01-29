@@ -17,7 +17,10 @@ class ETF(ETFScraper):
     def info(
         self,
     ):
-        return self._get_etf_info()
+        info = self._get_etf_info()
+        info['vitals']['etf_name'] = self.base_info['etf_name']
+        
+        return info
 
     @property
     def expense(
@@ -64,11 +67,9 @@ class ETF(ETFScraper):
     def to_dict(
         self,
     ):
-        info = self.info
-        info['etf_name'] = self.base_info
         
         return {
-            "info": info,
+            "info": self.info,
             "expense": self.expense,
             "holdings": self.holdings,
             "holdings_analysis": self.holdings_analysis,
