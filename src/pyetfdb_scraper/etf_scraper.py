@@ -32,6 +32,7 @@ class ETFScraper(object):
         self.user_agents = load_user_agents()
         self.request_headers: dict = {
             "User-Agent": user_agent if not user_agent else random.choice(self.user_agents),
+            "Referer": "https://etfdb.com/etfs/QQQ"
         }
         self.scrape_url: str = f"{self.base_url}/{ticker}"
 
@@ -39,11 +40,13 @@ class ETFScraper(object):
 
         self.etf_ticker_body_soup = soup.find("div", {"id": "etf-ticker-body"})
 
-    def __request_ticker(self, retries: int = 3) -> BeautifulSoup:
+    def __request_ticker(self, retries: int = 2) -> BeautifulSoup:
         try:
+            print(f"Requesting for {self.ticker}", "\t\t")
             response: requests.Response = requests.get(
                 self.scrape_url, headers=self.request_headers
             )
+            print(f"Completed Requested for {self.ticker}")
             if response.status_code == 200:
                 soup = BeautifulSoup(response.text, features="lxml")
                 return soup
@@ -61,18 +64,14 @@ class ETFScraper(object):
                 raise Exception(
                     f"Request failed for {self.scrape_url}. Response code {str(response.status_code)}. Error string {response.text}"
                 )
-        except OSError as oex:
+        except Exception as error:
             if retries:
+                print(f"Exception raised. Retrying for {retries} time. Error code is {str(error)}")
+                time.sleep(random.randrange(5))
                 self.__request_ticker(retries=retries - 1)
             else:
-                raise
-        except NewConnectionError as nex:
-            if retries:
-                self.__request_ticker(retries=retries - 1)
-            else:
-                raise
-        except Exception:
-            raise
+                print(f"Reduced retries. Sleeping for 15 mins. Current symbol is {self.ticker}")
+                time.sleep(15 * 60)
 
     def _get_base_etf_info(
         self,
