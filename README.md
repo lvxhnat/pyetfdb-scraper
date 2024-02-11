@@ -618,7 +618,7 @@ I am working full-time, and as such don't have much time to constantly push comm
 * ETF Category has yet to be updated
 
 ## Disclaimer 
-This package is built with some reference to the existing [pyetf](https://github.com/JakubPluta/pyetf) package creted by Jakub Pluta, which has since not been actively maintained.
+This package is built with some reference to the existing [pyetf](https://github.com/JakubPluta/pyetf) package.
 
 ## Contributing
 Pull requests are welcome.
