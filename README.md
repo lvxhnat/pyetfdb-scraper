@@ -624,4 +624,4 @@ This package is built with some reference to the existing [pyetf](https://github
 Pull requests are welcome.
 
 ## License
-MIT License
+GPLv3 
