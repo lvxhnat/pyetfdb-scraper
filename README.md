@@ -621,7 +621,10 @@ I am working full-time, and as such don't have much time to constantly push comm
 This package is built with some reference to the existing [pyetf](https://github.com/JakubPluta/pyetf) package.
 
 ## Contributing
-Pull requests are welcome.
+
+All contributions, bug reports, bug fixes, documentation improvements, enhancements, and ideas are welcome.
+
+If you are simply looking to start working with the codebase, navigate to the GitHub "issues" tab and start looking through interesting issues. You can also triage issues which may include reproducing bug reports, or asking for vital information such as version numbers or reproduction instructions. To read more about contributing, you can refer to [CONTRIBUTING](./CONTRIBUTING)
 
 ## License
 GPLv3 
