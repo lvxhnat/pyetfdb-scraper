@@ -12,7 +12,7 @@ conda create -n pyetfdb python=3.9
 
 You can install the package in editable development mode with:
 ```
-pip install -e .[dev]
+pip install -e ".[dev]"
 ```
 Followed by
 ```
