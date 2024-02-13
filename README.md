@@ -642,9 +642,6 @@ I am working full-time, and as such don't have much time to constantly push comm
 * Unit tests for the current code
 * ETF Category has yet to be updated
 
-## Disclaimer
-This package is built with some reference to the existing [pyetf](https://github.com/JakubPluta/pyetf) package.
-
 ## Contributing
 
 All contributions, bug reports, bug fixes, documentation improvements, enhancements, and ideas are welcome.
@@ -653,3 +650,6 @@ If you are simply looking to start working with the codebase, navigate to the Gi
 
 ## License
 GPLv3
+
+## Disclaimer
+This package is built with some reference to the existing [pyetf](https://github.com/JakubPluta/pyetf) package.
