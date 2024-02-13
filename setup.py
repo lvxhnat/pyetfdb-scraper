@@ -20,6 +20,8 @@ with open(
 
     version = result.group(1)
 
+dev_requirements = {"black", "pre-commit"}
+
 setup(
     name=name,
     version=version,
@@ -31,10 +33,11 @@ setup(
     url="https://github.com/lvxhnat/pyetf-scraper",
     package_dir={"": "src"},
     packages=find_packages("src", exclude=["*tests"]),
-    package_data={name: ["data/etfdb.json"]},
+    package_data={name: ["data/etfdb.json", "data/user-agents.txt"]},
     python_requires=">=3.7",
     install_requires=[
         "requests",
         "bs4",
     ],
+    extras_require={"dev": list(dev_requirements)},
 )

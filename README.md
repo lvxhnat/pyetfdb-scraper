@@ -1,7 +1,7 @@
 # pyetfdb_scraper: Free ETF data at your fingertips
 ```pyetfdb_scraper``` is a Python library for extracting ETF data directly from [ETFDB](https://etfdb.com/), a website providing one of the largest ETF Databases containing ETFs from a vast range of asset classes, industries, issuers, and investment styles.
 
-## Quick Start 
+## Quick Start
 Install with ```pip``` as a package pip. See the pip package here https://pypi.org/project/pyetfdb-scraper/.
 
 ```
@@ -15,14 +15,27 @@ from pyetfdb_scraper import etf
 ## Example Usage
 
 ```python
-from pyetfdb_scraper.etf import ETF,load_etfs 
+from pyetfdb_scraper.etf import ETF,load_etfs
 # returns list of available ETFs.
 etfs = load_etfs()
-# load etf
+```
+```
+>>> ['SPY', 'IVV', 'VTI', 'VOO', 'QQQ', 'VEA', 'IEFA', ...]
+```
+### Retrieve info about a single ticker
+``` python
+# Load ETF
 ivv = ETF('IVV')
-# Get basic ETF information
-print(ivv.info)
+```
 
+```python
+print(ivv.info)
+```
+
+<details>
+<summary>  Results </summary>
+
+```
 >>> {
     "vitals": {
         "etf_name": "iShares Core S&P 500 ETF",
@@ -145,8 +158,19 @@ print(ivv.info)
     ],
 }
 
-print(ivv.to_dict())
+```
+</details>
 
+
+<br/>
+
+```python
+print(ivv.to_dict())
+```
+<details>
+<summary>Results</summary>
+
+```
 >>> {
     "info": {
         "vitals": {
@@ -610,14 +634,15 @@ print(ivv.to_dict())
         },
     ],
 }
-
 ```
+</details>
+
 ## Help Needed!
-I am working full-time, and as such don't have much time to constantly push commits or updates. I will appreciate if some help can be provided, such as: 
+I am working full-time, and as such don't have much time to constantly push commits or updates. I will appreciate if some help can be provided, such as:
 * Unit tests for the current code
 * ETF Category has yet to be updated
 
-## Disclaimer 
+## Disclaimer
 This package is built with some reference to the existing [pyetf](https://github.com/JakubPluta/pyetf) package.
 
 ## Contributing
@@ -627,4 +652,4 @@ All contributions, bug reports, bug fixes, documentation improvements, enhanceme
 If you are simply looking to start working with the codebase, navigate to the GitHub "issues" tab and start looking through interesting issues. You can also triage issues which may include reproducing bug reports, or asking for vital information such as version numbers or reproduction instructions. To read more about contributing, you can refer to [CONTRIBUTING](./CONTRIBUTING)
 
 ## License
-GPLv3 
+GPLv3

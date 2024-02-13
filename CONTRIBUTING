@@ -1,6 +1,28 @@
 # Contributing
 We always welcome contributions to help make DataHub better. Take a moment to read this document if you would like to contribute.
 
+
+## Dev Mode
+For development it is recommended to use some additional code formatters, tools and virtual environment to ensure code quality.
+
+Setup your development environment with your preferred tool, we use conda:
+```
+conda create -n pyetfdb python=3.9
+```
+
+You can install the package in editable development mode with:
+```
+pip install -e .[dev]
+```
+Followed by
+```
+pre-commit install
+```
+to set up pre-commit hooks in your development environment.
+
+### Code Formatting
+Black formatter is used via the pre-commit hooks.
+
 ## Submitting a Pull Request (PR)
 
 Before you submit your Pull Request (PR), consider the following guidelines:
@@ -24,7 +46,7 @@ build: Changes that affect the build system or external dependencies
 ci: Changes to our CI configuration files and scripts
 edit: Miscellaneous
 ```
-The general format should follow: 
+The general format should follow:
 ```
 <type>[optional scope]: <description>
 
@@ -36,6 +58,3 @@ A scope may be provided to a commit’s type, to provide additional contextual i
 ```
 feat(parser): add ability to parse arrays
 ```
-
-
-
