@@ -36,8 +36,10 @@ setup(
     package_data={name: ["data/etfdb.json", "data/user-agents.txt"]},
     python_requires=">=3.7",
     install_requires=[
+        "pydantic",
         "requests",
         "bs4",
+        "lxml",
     ],
     extras_require={"dev": list(dev_requirements)},
 )
